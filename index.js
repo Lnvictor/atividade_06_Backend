@@ -2,7 +2,6 @@ const express = require('express');
 
 const app = express();
 const endpoint = "/notes";
-app.listen(process.env.PORT);
 app.use(endpoint, express.json());
 app.use("/database", express.json());
 

@@ -2,7 +2,7 @@ const express = require('express');
 
 const app = express();
 const endpoint = "/notes";
-
+app.listen(process.env.PORT);
 app.use(endpoint, express.json());
 app.use("/database", express.json());
 
@@ -16,10 +16,9 @@ app.use(cors())
 
 let SERVER_INFORMATION = 'server_information';
 
-app.listen(80);
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-server.listen(80);
+server.listen(process.env.PORT);
 
 function notify(id, title, name, last_name, email, team, birthday, city, state, password){
     console.log(title);

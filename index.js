@@ -16,10 +16,10 @@ app.use(cors())
 
 let SERVER_INFORMATION = 'server_information';
 
-//app.listen(3000);
+app.listen(80);
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-server.listen(3000);
+server.listen(80);
 
 function notify(id, title, name, last_name, email, team, birthday, city, state, password){
     console.log(title);

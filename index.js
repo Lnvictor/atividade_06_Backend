@@ -2,11 +2,16 @@ const express = require('express');
 
 const app = express();
 const endpoint = "/notes";
+var cors = require('cors')
+
+var { getBrasileiraoTable, getBrasileiraoRodada, getTeams } = require("./controllers/brasileirao");
+var { getFase } = require("./controllers/copa_do_brasil");
+
+
 app.use(endpoint, express.json());
 app.use("/database", express.json());
 
 
-var cors = require('cors')
 app.use(cors())
 
 /*
@@ -17,7 +22,7 @@ let SERVER_INFORMATION = 'server_information';
 
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-server.listen(process.env.PORT);
+server.listen(process.env.PORT || 3000);
 
 function notify(id, title, name, last_name, email, team, birthday, city, state, password){
     console.log(title);
@@ -145,15 +150,35 @@ async function connectToMongoDB(){
         );
     });
     
-    app.delete(`${endpoint}/:id`, async (req,res) => {
+    app.delete(`${endpoint}/:id`, async (req, res) => {
         const id = req.params.id;
         console.log(id);
         await mensagens.deleteOne({_id : ObjectId(id)});
         res.send('1');
     
         notify(id, "", "", "", "", "", "", "","");
-    });    
+    }); 
+
 }
+
+app.get("/brasileirao/tabela", async (req, res) =>{
+    var j = await getBrasileiraoTable();
+    res.send(j.data);
+})
+
+app.get("/brasileirao/rodadas/:rodada/:id", async (req, res) => {
+    var j = await getBrasileiraoRodada(req.params.rodada, req.params.id)
+    res.send(j)
+})
+
+app.get("/copaBrasil/fases/:fase/:id", async (req, res) => {
+    var j = await getFase(req.params.fase, req.params.id)
+    res.send(j)
+})
+
+app.get("/teams", async (req, res) => {
+    res.send({times: await getTeams()});
+})
 connectToMongoDB();
 
 /*
